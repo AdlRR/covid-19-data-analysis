@@ -8,10 +8,12 @@ The purpose of this program is to check the total COVID-19 cases and deaths per 
 
 * Both datasets are crossed, and only the country, the lockdown start date, and the new and total cases and deaths per million are kept.
 
-* The crossed data are recorded in `/lockdown_dates_with_data.csv`, and plotted in bar charts, which can be found in `/charts/`.
+* The crossed data are recorded in `/lockdown_dates_with_data.csv`, and plotted in bar charts using the plotly library. The charts for total cases and deaths can be found in `/charts/`.
 
 Be aware that:
 
 * I have excluded countries with subnational lockdowns, because the OWID dataset doesn't include regional data. This excludes for example China and the USA.
 
-* I have removed the countries for which there no data for the lockdown start date. They are El Salvador, Kosovo, Lybia and Samoa.
+* I have removed the countries for which there no data for the lockdown start date. They are Republic of the Congo, El Salvador, Kosovo, Lybia, Northern Cyprus and Samoa.
+
+* I have removed countries with population below 100,000 inhabitants. They are Bermuda, Guernsey and San Marino. They all have unusually high figures, specially San Marino, probably because of their small population.

@@ -37,12 +37,22 @@ for row_ld in lockdown_dates:
 				row_ldwd['new_cases_per_million'] = float(row_od[8])
 				row_ldwd['total_deaths_per_million'] = float(row_od[9])
 				row_ldwd['new_deaths_per_million'] = float(row_od[10])
+				row_ldwd['population'] = row_od[19]
 		lockdown_dates_with_data.append(row_ldwd)
 
-#Remove countries for which there no data for the lockdown start date, otherwise we will get errors. They are El Salvador, Kosovo, Lybia and Samoa.
+#We remove countries for which there no data for the lockdown start date, otherwise we will get errors.
+print('Countries with no data for the lockdown date:')
 for row in lockdown_dates_with_data:
 	if 'total_cases_per_million' not in row.keys():
 		lockdown_dates_with_data.remove(row)
+		print(row['country'])
+		
+#We remove countries with population below 100.000. They are San Marino, Guernsey and Bermuda.
+print('\nCountries with less than 100,000 inhabitants:')
+for row in lockdown_dates_with_data:
+	if float(row['population']) <= 100000:
+		lockdown_dates_with_data.remove(row)
+		print(row['country'], row['population'])
 
 #Sort the list according to the total death per million:
 lockdown_dates_with_data.sort(key = (lambda row: row['total_deaths_per_million']))
@@ -59,11 +69,10 @@ with open('lockdown_dates_with_data.csv', 'w', encoding = 'ANSI') as outfile:
 		line = line[0:-1] #remove the comma at the end
 		outfile.write(line + '\n')
 
-#Sort the list according to each of the metrics, and plot each of the metrics on a graph:
-
+#Sort the list according to each of the metrics, and plot each of the metrics on a graph using the plotly library:
+import plotly.graph_objects as go
 #Total cases per million:
 lockdown_dates_with_data.sort(key = (lambda row: row['total_cases_per_million']))
-import plotly.graph_objects as go
 fig = go.Figure(
     data=[go.Bar(x=[row['country'] for row in lockdown_dates_with_data],y=[row['total_cases_per_million'] for row in lockdown_dates_with_data])],
     layout_title_text="Total cases per million"
@@ -72,7 +81,6 @@ fig.show()
 
 #New cases per million:
 lockdown_dates_with_data.sort(key = (lambda row: row['new_cases_per_million']))
-import plotly.graph_objects as go
 fig = go.Figure(
     data=[go.Bar(x=[row['country'] for row in lockdown_dates_with_data],y=[row['new_cases_per_million'] for row in lockdown_dates_with_data])],
     layout_title_text="New cases per million"
@@ -81,7 +89,6 @@ fig.show()
 
 #Total deaths per million:
 lockdown_dates_with_data.sort(key = (lambda row: row['total_deaths_per_million']))
-import plotly.graph_objects as go
 fig = go.Figure(
     data=[go.Bar(x=[row['country'] for row in lockdown_dates_with_data],y=[row['total_deaths_per_million'] for row in lockdown_dates_with_data])],
     layout_title_text="Total deaths per million"
@@ -90,7 +97,6 @@ fig.show()
 
 #New deaths per million:
 lockdown_dates_with_data.sort(key = (lambda row: row['new_deaths_per_million']))
-import plotly.graph_objects as go
 fig = go.Figure(
     data=[go.Bar(x=[row['country'] for row in lockdown_dates_with_data],y=[row['new_deaths_per_million'] for row in lockdown_dates_with_data])],
     layout_title_text="New deaths per million"
